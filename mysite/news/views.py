@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import NewsSearchForm
+from .utils import naverapi_utils as naver_api
 
 
 @login_required(login_url="common:login")
@@ -17,15 +18,22 @@ def news_search(request):
     뉴스 검색 화면을 반환한다.
     """
 
+    news_list = None
+
     if request.method == "GET":
         if len(request.GET):
             form = NewsSearchForm(request.GET)
 
             if form.is_valid():
-                pass
+                keyword = form.cleaned_data["keyword"]
+                news_list = naver_api.call(keyword)
         # 뉴스를 검색하지 않고 검색 페이지를 오픈할 때는
-        # form 유효성 체크를 하지 않도록 한다.
+        # 비어 있는 폼을 반환한다.
         else:
             form = NewsSearchForm()
+    else:
+        form = NewsSearchForm()
 
-    return render(request, "news/news_search.html", {"form": form},)
+    return render(
+        request, "news/news_search.html", {"form": form, "news_list": news_list},
+    )
