@@ -39,5 +39,5 @@ def news_search(request):
     )
 
 
-# 테스트
+# 테스트22
 
