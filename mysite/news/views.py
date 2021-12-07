@@ -37,3 +37,7 @@ def news_search(request):
     return render(
         request, "news/news_search.html", {"form": form, "news_list": news_list},
     )
+
+
+# 테스트
+
